@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Premium retail store template" />
+  <title data-config="pageTitle">Loading…</title>
+
+  <!-- Fonts — swap in config.js → fonts{} -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Config must load first -->
+  <script src="config.js"></script>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       NAVBAR
+       ═══════════════════════════════════════════════════════ -->
+  <header id="navbar" role="banner">
+    <nav class="nav-inner" aria-label="Main navigation">
+      <a href="#" class="nav-logo" aria-label="Go to homepage">
+        <img id="nav-logo-img" src="" alt="" style="display:none" />
+        <span id="nav-logo-text"></span>
+      </a>
+
+      <ul class="nav-links" role="list" id="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#products">Shop</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li>
+          <a href="#order" class="btn btn-nav">Order Now</a>
+        </li>
+      </ul>
+
+      <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ═══════════════════════════════════════════════════════
+         HERO
+         ═══════════════════════════════════════════════════════ -->
+    <section id="hero" aria-labelledby="hero-heading" data-section="hero">
+      <div class="hero-overlay" id="hero-overlay"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow" id="hero-eyebrow"></p>
+        <h1 class="hero-headline" id="hero-headline"></h1>
+        <p class="hero-sub" id="hero-sub"></p>
+        <div class="hero-ctas">
+          <a id="hero-cta-primary" href="#products" class="btn btn-primary">Shop Collection</a>
+          <a id="hero-cta-secondary" href="#about" class="btn btn-ghost">Our Story</a>
+        </div>
+      </div>
+      <div class="hero-scroll-hint" aria-hidden="true">
+        <span class="scroll-line"></span>
+        <span class="scroll-label">Scroll</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         ABOUT
+         ═══════════════════════════════════════════════════════ -->
+    <section id="about" data-section="about" aria-labelledby="about-heading">
+      <div class="container about-grid">
+        <div class="about-image-wrap reveal">
+          <img id="about-img" src="" alt="About us" loading="lazy" />
+        </div>
+        <div class="about-text reveal reveal-delay-1">
+          <span class="section-label">About</span>
+          <h2 id="about-heading"></h2>
+          <div id="about-body"></div>
+          <div class="about-stats" id="about-stats"></div>
+          <a href="#products" class="btn btn-primary">View the Menu</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         TESTIMONIALS
+         ═══════════════════════════════════════════════════════ -->
+    <section id="testimonials" data-section="testimonials" aria-labelledby="testimonials-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Reviews</span>
+          <h2 id="testimonials-heading">What People Say</h2>
+        </div>
+        <div class="testimonial-grid" id="testimonial-grid"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         FEATURED
+         ═══════════════════════════════════════════════════════ -->
+    <section id="featured" data-section="featured" aria-labelledby="featured-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Handpicked</span>
+          <h2 id="featured-heading">Editor's Selection</h2>
+        </div>
+        <div class="featured-grid" id="featured-grid"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         PRODUCTS
+         ═══════════════════════════════════════════════════════ -->
+    <section id="products" data-section="products" aria-labelledby="products-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Collection</span>
+          <h2 id="products-heading">All Products</h2>
+        </div>
+
+        <!-- Category filter -->
+        <div class="filter-bar reveal" role="group" aria-label="Filter by category" id="filter-bar"></div>
+
+        <!-- Product grid -->
+        <div class="product-grid" id="product-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         ORDER / INQUIRY FORM
+         ═══════════════════════════════════════════════════════ -->
+    <section id="order" data-section="contact" aria-labelledby="order-heading">
+      <div class="container order-grid">
+        <div class="order-text reveal">
+          <span class="section-label">Order & Inquiry</span>
+          <h2 id="order-heading">Place an Order</h2>
+          <p>Add items below, then fill in your details and send.</p>
+
+          <!-- Live cart — always visible, grows as items are added -->
+          <div class="cart-list" id="cart-list" aria-live="polite">
+            <p class="cart-empty-msg" id="cart-empty-msg">No items added yet.</p>
+          </div>
+          <div class="cart-total-row" id="cart-total-row" style="display:none">
+            <span>Estimated Total</span>
+            <span id="cart-total-val"></span>
+          </div>
+        </div>
+        <div class="order-form-wrap reveal reveal-delay-1">
+          <form id="order-form" novalidate>
+
+            <!-- Product select -->
+            <div class="field-group">
+              <label for="form-product">Product</label>
+              <select id="form-product" name="product" required>
+                <option value="">— Select a product —</option>
+              </select>
+            </div>
+
+            <!-- Dynamic options injected here -->
+            <div id="form-options"></div>
+
+            <!-- Quantity -->
+            <div class="field-group">
+              <label for="form-qty">Quantity</label>
+              <input type="number" id="form-qty" name="quantity" min="1" value="1" required />
+            </div>
+
+            <!-- Customer info -->
+            <div class="field-row">
+              <div class="field-group">
+                <label for="form-name">Name</label>
+                <input type="text" id="form-name" name="name" placeholder="Jane Smith" required autocomplete="name" />
+              </div>
+              <div class="field-group">
+                <label for="form-email">Email</label>
+                <input type="email" id="form-email" name="email" placeholder="jane@email.com" required autocomplete="email" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="form-phone">Phone (optional)</label>
+              <input type="tel" id="form-phone" name="phone" placeholder="+1 555 000 0000" autocomplete="tel" />
+            </div>
+
+            <div class="field-group">
+              <label for="form-notes">Notes / Special requests</label>
+              <textarea id="form-notes" name="notes" rows="3" placeholder="Any special requirements…"></textarea>
+            </div>
+
+            <div class="form-btn-row">
+              <button type="button" class="btn btn-outline" id="form-add-btn">+ Add to Order</button>
+              <button type="submit" class="btn btn-primary" id="form-submit">Send Inquiry</button>
+            </div>
+            <p class="form-note">We typically reply within 1 business day.</p>
+            <div class="form-feedback" id="form-feedback" role="alert" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         CONTACT
+         ═══════════════════════════════════════════════════════ -->
+    <section id="contact" data-section="contact" aria-labelledby="contact-heading">
+      <div class="container contact-grid">
+        <div class="contact-info reveal">
+          <span class="section-label">Find Us</span>
+          <h2 id="contact-heading">Get in Touch</h2>
+          <div id="contact-details"></div>
+          <div class="hours-block" id="hours-block"></div>
+        </div>
+        <div class="contact-map reveal reveal-delay-1">
+          <iframe id="map-iframe" src="" title="Store location" loading="lazy" aria-label="Map showing store location"></iframe>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════ -->
+  <footer id="footer" data-section="footer" role="contentinfo">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo footer-logo">
+          <span id="footer-logo-text"></span>
+        </a>
+        <p id="footer-tagline"></p>
+        <div class="social-links" id="social-links"></div>
+      </div>
+      <div class="footer-nav">
+        <h3>Navigate</h3>
+        <ul role="list">
+          <li><a href="#about">About</a></li>
+          <li><a href="#products">Shop</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#order">Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h3>Contact</h3>
+        <div id="footer-contact-details"></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p id="footer-copy"></p>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PRODUCT MODAL
+       ═══════════════════════════════════════════════════════ -->
+  <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-product-name" hidden>
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close" aria-label="Close product detail">&times;</button>
+      <div class="modal-body">
+        <div class="modal-gallery">
+          <img id="modal-img" src="" alt="" />
+        </div>
+        <div class="modal-info">
+          <div class="modal-tags" id="modal-tags"></div>
+          <p class="modal-category" id="modal-category"></p>
+          <h2 id="modal-product-name"></h2>
+          <p class="modal-price" id="modal-price"></p>
+          <p class="modal-desc" id="modal-desc"></p>
+          <div class="modal-options" id="modal-options"></div>
+          <div class="modal-actions">
+            <button class="btn btn-primary" id="modal-order-btn">Inquire / Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+
+</body>
+</html>
