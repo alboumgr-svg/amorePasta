@@ -198,13 +198,36 @@
         <p class="card-category">${product.category}</p>
         <p class="card-name">${product.name}</p>
         ${product.price ? `<p class="card-price">${fmt(product.price)}</p>` : ""}
+        <button class="card-add-btn" aria-label="Add ${product.name} to cart">+ Add to Cart</button>
       </div>
     `;
 
-    // Open modal on click or Enter
-    const openModal = () => showModal(product.id);
-    card.addEventListener("click", openModal);
-    card.addEventListener("keydown", e => e.key === "Enter" && openModal());
+    // Image area → open modal
+    const imgArea = card.querySelector(".card-image");
+    imgArea.addEventListener("click", e => { e.stopPropagation(); showModal(product.id); });
+
+    // "Add to Cart" button
+    const addBtn = card.querySelector(".card-add-btn");
+    addBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      if (product.options?.length) {
+        // Has options — open modal so user can choose
+        showModal(product.id);
+      } else {
+        // No options — add directly
+        addToCart(product, 1, {});
+        // Flash confirmation on the button
+        addBtn.textContent = "✓ Added";
+        addBtn.classList.add("added");
+        setTimeout(() => {
+          addBtn.textContent = "+ Add to Cart";
+          addBtn.classList.remove("added");
+        }, 1400);
+      }
+    });
+
+    // Card keyboard: Enter opens modal
+    card.addEventListener("keydown", e => e.key === "Enter" && showModal(product.id));
 
     return card;
   }
@@ -347,88 +370,44 @@
     }
   }
 
-  /* ── 9. ORDER FORM ───────────────────────────────────── */
+  /* ── 9. CART STATE & ORDER FORM ─────────────────────── */
 
-  // Cart state — array of {product, qty, options, uid}
+  // Shared cart array — {product, qty, options:{}, uid}
   const cart = [];
 
-  function buildOrderForm() {
-    const select = $("#form-product");
-
-    // Populate product dropdown
-    C.products.filter(p => p.available).forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p.id;
-      opt.textContent = `${p.name}${p.price ? ` — ${fmt(p.price)}` : ""}`;
-      select.appendChild(opt);
-    });
-
-    // On product change → rebuild options
-    select.addEventListener("change", () => {
-      const p = C.products.find(x => x.id === select.value);
-      buildFormOptions(p);
-    });
-
-    // "Add to Order" button
-    $("#form-add-btn").addEventListener("click", addToCart);
-
-    // Form submit
-    $("#order-form").addEventListener("submit", handleFormSubmit);
-  }
-
-  /* ── Add selected product to cart ── */
-  function addToCart() {
-    const select = $("#form-product");
-    if (!select.value) {
-      select.style.borderColor = "#E04E4E";
-      select.focus();
-      return;
-    }
-    select.style.borderColor = "";
-
-    const product = C.products.find(p => p.id === select.value);
-    const qty     = Math.max(1, parseInt($("#form-qty").value, 10) || 1);
-
-    // Collect any option selects
-    const options = {};
-    $$("#form-options select").forEach(s => {
-      if (s.value) options[s.getAttribute("aria-label")] = s.value;
-    });
-
-    cart.push({ product, qty, options, uid: Date.now() });
+  /* ── Core add-to-cart (called from card button and modal) ── */
+  function addToCart(product, qty, options) {
+    cart.push({ product, qty: qty || 1, options: options || {}, uid: Date.now() });
     renderCart();
-
-    // Reset product picker + options (keep customer info intact)
-    select.value = "";
-    $("#form-options").innerHTML = "";
-    $("#form-qty").value = 1;
+    updateFAB();
   }
 
-  /* ── Remove item from cart ── */
+  /* ── Remove from cart ── */
   function removeFromCart(uid) {
     const i = cart.findIndex(x => x.uid === uid);
     if (i !== -1) cart.splice(i, 1);
     renderCart();
+    updateFAB();
   }
 
-  /* ── Render the live cart list ── */
+  /* ── Render the live cart list (left column of order section) ── */
   function renderCart() {
     const listEl   = $("#cart-list");
     const emptyMsg = $("#cart-empty-msg");
     const totalRow = $("#cart-total-row");
     const totalVal = $("#cart-total-val");
+    if (!listEl) return;
 
-    // Clear existing items (keep empty-msg node)
     $$(".cart-item", listEl).forEach(n => n.remove());
 
     if (!cart.length) {
-      emptyMsg.style.display = "";
-      totalRow.style.display = "none";
+      if (emptyMsg) emptyMsg.style.display = "";
+      if (totalRow) totalRow.style.display = "none";
       return;
     }
 
-    emptyMsg.style.display = "none";
-    totalRow.style.display = "flex";
+    if (emptyMsg) emptyMsg.style.display = "none";
+    if (totalRow) totalRow.style.display = "flex";
 
     let total = 0;
     cart.forEach(item => {
@@ -456,49 +435,43 @@
       listEl.appendChild(row);
     });
 
-    // Scroll to show newest item
     listEl.scrollTop = listEl.scrollHeight;
-    totalVal.textContent = total ? fmt(total) : "—";
+    if (totalVal) totalVal.textContent = total ? fmt(total) : "—";
   }
 
-  function buildFormOptions(product) {
-    const wrap = $("#form-options");
-    wrap.innerHTML = "";
-    if (!product?.options?.length) return;
+  /* ── Floating cart badge ── */
+  function updateFAB() {
+    const fab     = $("#cart-fab");
+    const countEl = $("#cart-fab-count");
+    if (!fab) return;
 
-    product.options.forEach(opt => {
-      const group = el("div", "field-group");
-      const label = el("label", null, opt.label);
-      const sel = el("select");
-      sel.name = "option_" + opt.label.toLowerCase().replace(/\s+/g, "_");
-      sel.setAttribute("aria-label", opt.label);
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    if (total === 0) { fab.hidden = true; return; }
 
-      const placeholder = document.createElement("option");
-      placeholder.value = "";
-      placeholder.textContent = `— ${opt.label} —`;
-      sel.appendChild(placeholder);
+    fab.hidden = false;
+    countEl.textContent = total;
+    countEl.classList.remove("bump");
+    void countEl.offsetWidth; // force reflow for animation restart
+    countEl.classList.add("bump");
+    setTimeout(() => countEl.classList.remove("bump"), 300);
+  }
 
-      opt.choices.forEach(ch => {
-        const o = document.createElement("option");
-        o.value = ch;
-        o.textContent = ch;
-        sel.appendChild(o);
-      });
-
-      group.appendChild(label);
-      group.appendChild(sel);
-      wrap.appendChild(group);
+  /* ── Wire the FAB click → scroll to order section ── */
+  function initFAB() {
+    const fab = $("#cart-fab");
+    if (!fab) return;
+    fab.addEventListener("click", () => {
+      document.querySelector("#order").scrollIntoView({ behavior: "smooth" });
     });
   }
 
-  // Pre-fill form from modal → scrolls to order section
-  window.__prefillForm = function (productId) {
-    const sel = $("#form-product");
-    sel.value = productId;
-    sel.dispatchEvent(new Event("change"));
-    document.querySelector("#order").scrollIntoView({ behavior: "smooth" });
-  };
+  /* ── Simple customer-details form ── */
+  function buildOrderForm() {
+    const form = $("#order-form");
+    if (form) form.addEventListener("submit", handleFormSubmit);
+  }
 
+  /* ── Form submit ── */
   function handleFormSubmit(e) {
     e.preventDefault();
     const form   = e.target;
@@ -506,17 +479,21 @@
     const btn    = $("#form-submit");
     const method = C.form?.submitMethod || "mailto";
 
-    // Must have at least one cart item + customer name + email
     if (!cart.length) {
-      showFeedback(fb, "Please add at least one item to your order.", "error");
+      showFeedback(fb, "Please add at least one item to your cart first.", "error");
       return;
     }
+
     const required = ["form-name", "form-email"];
     let valid = true;
     required.forEach(id => {
       const field = document.getElementById(id);
-      if (!field.value.trim()) { field.style.borderColor = "#E04E4E"; valid = false; }
-      else field.style.borderColor = "";
+      if (!field || !field.value.trim()) {
+        if (field) field.style.borderColor = "#E04E4E";
+        valid = false;
+      } else {
+        field.style.borderColor = "";
+      }
     });
     if (!valid) {
       showFeedback(fb, "Please fill in your name and email.", "error");
@@ -525,17 +502,16 @@
 
     const data = new FormData(form);
 
-    // Build cart summary for email body
     const cartLines = cart.map(item => {
       const optStr = Object.entries(item.options).map(([k,v]) => `${k}: ${v}`).join(", ");
       return `• ${item.product.name} x${item.qty}${optStr ? ` (${optStr})` : ""}${item.product.price ? " — " + fmt(item.product.price * item.qty) : ""}`;
     }).join("\n");
 
     if (method === "mailto") {
-      const subject = encodeURIComponent(`Order Inquiry — ${C.business.name}`);
+      const subject = encodeURIComponent(`Order — ${C.business.name}`);
       const body = encodeURIComponent(
         `ORDER\n${cartLines}\n\n` +
-        `Name: ${data.get("name")}\n` +
+        `Name:  ${data.get("name")}\n` +
         `Email: ${data.get("email")}\n` +
         `Phone: ${data.get("phone") || "N/A"}\n` +
         `Notes: ${data.get("notes") || "N/A"}`
@@ -559,14 +535,18 @@
         .then(r => r.json())
         .then(json => {
           if (json.ok || json.next) {
-            form.reset(); cart.length = 0; renderCart();
-            showFeedback(fb, "Message sent! We'll be in touch within 24 hours.", "success");
+            form.reset(); cart.length = 0; renderCart(); updateFAB();
+            showFeedback(fb, "Order sent! We'll be in touch within 24 hours.", "success");
           } else {
             showFeedback(fb, "Something went wrong. Please try again.", "error");
           }
         })
         .catch(() => showFeedback(fb, "Network error. Please try again.", "error"))
-        .finally(() => { btn.disabled = false; btn.textContent = "Send Inquiry"; form.removeChild(cartInput); });
+        .finally(() => {
+          btn.disabled = false;
+          btn.textContent = "Send Order Request";
+          if (form.contains(cartInput)) form.removeChild(cartInput);
+        });
       return;
     }
 
@@ -675,10 +655,28 @@
       optsEl.appendChild(group);
     });
 
-    // Order button → prefill form
-    $("#modal-order-btn").onclick = () => {
+    // Helper to collect selected option chips
+    const getModalOptions = () => {
+      const opts = {};
+      $$(".option-group", optsEl).forEach(group => {
+        const selected = group.querySelector(".option-chip.selected");
+        const labelEl  = group.querySelector("label");
+        if (selected && labelEl) opts[labelEl.textContent] = selected.textContent;
+      });
+      return opts;
+    };
+
+    // "Add to Cart" — adds and closes modal
+    $("#modal-add-btn").onclick = () => {
+      addToCart(p, 1, getModalOptions());
       closeModal();
-      window.__prefillForm(p.id);
+    };
+
+    // "Checkout →" — adds and scrolls to order section
+    $("#modal-checkout-btn").onclick = () => {
+      addToCart(p, 1, getModalOptions());
+      closeModal();
+      document.querySelector("#order").scrollIntoView({ behavior: "smooth" });
     };
 
     overlay.hidden = false;
@@ -781,6 +779,7 @@
     buildOrderForm();
     buildFooter();
     initModal();
+    initFAB();
     initScrollReveal();
     initNavScroll();
     initHamburger();

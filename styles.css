@@ -1519,3 +1519,221 @@ select {
 @media (max-width: 480px) {
   .form-btn-row { grid-template-columns: 1fr; }
 }
+
+
+/* ════════════════════════════════════════════════════════════
+   19. CART UX ADDITIONS
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Permanent "Add to Cart" button on product card ── */
+.card-add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: var(--space-3);
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease);
+}
+.card-add-btn:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-bg);
+}
+/* Flash green on successful add */
+.card-add-btn.added {
+  background: #059669;
+  border-color: #059669;
+  color: #fff;
+  pointer-events: none;
+}
+
+/* ── Floating cart badge (bottom-right) ── */
+.cart-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 24px;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-primary);
+  color: var(--color-bg);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.75rem 1.4rem 0.75rem 1.1rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  transition: transform var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+  /* Entrance animation */
+  animation: fabPop 0.35s var(--ease-out) both;
+}
+.cart-fab:hover {
+  background: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.28);
+}
+.cart-fab[hidden] { display: none; }
+
+.cart-fab-icon { font-size: 1rem; line-height: 1; }
+.cart-fab-label { letter-spacing: 0.03em; }
+.cart-fab-count {
+  background: var(--color-accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 5px;
+  /* Bump animation when count changes */
+  transition: transform 0.18s var(--ease);
+}
+.cart-fab-count.bump {
+  transform: scale(1.4);
+}
+
+@keyframes fabPop {
+  from { opacity: 0; transform: translateY(16px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0)     scale(1);   }
+}
+
+/* ── Modal: two-button action row ── */
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: auto;
+}
+.modal-actions .btn {
+  width: 100%;
+}
+
+/* ── Cart list (order section) ── */
+.cart-list {
+  margin-top: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-surface);
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+.cart-list::-webkit-scrollbar { width: 4px; }
+.cart-list::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 99px;
+}
+
+.cart-empty-msg {
+  padding: var(--space-6) var(--space-5);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  line-height: 1.6;
+}
+.cart-empty-msg strong { color: var(--color-text); }
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  animation: fadeUp 0.22s var(--ease-out) both;
+}
+.cart-item:last-child { border-bottom: none; }
+
+.cart-item-img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.cart-item-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.cart-item-sub {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.cart-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.cart-item-price {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--color-accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.cart-remove-btn {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1px 0;
+  transition: color var(--dur-fast);
+  text-decoration: underline;
+}
+.cart-remove-btn:hover { color: #E04E4E; }
+
+.cart-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  margin-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+#cart-total-val {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ── Mobile tweaks for FAB ── */
+@media (max-width: 768px) {
+  .cart-fab {
+    bottom: 20px;
+    right: 16px;
+    padding: 0.7rem 1.2rem 0.7rem 1rem;
+    font-size: 0.82rem;
+  }
+}

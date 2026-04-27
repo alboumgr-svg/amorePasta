@@ -135,13 +135,13 @@
     <section id="order" data-section="contact" aria-labelledby="order-heading">
       <div class="container order-grid">
         <div class="order-text reveal">
-          <span class="section-label">Order & Inquiry</span>
-          <h2 id="order-heading">Place an Order</h2>
-          <p>Add items below, then fill in your details and send.</p>
+          <span class="section-label">Your Order</span>
+          <h2 id="order-heading">Review & Checkout</h2>
+          <p>Add items from the shop above, then fill in your details and submit — we'll confirm everything within 24 hours.</p>
 
           <!-- Live cart — always visible, grows as items are added -->
           <div class="cart-list" id="cart-list" aria-live="polite">
-            <p class="cart-empty-msg" id="cart-empty-msg">No items added yet.</p>
+            <p class="cart-empty-msg" id="cart-empty-msg">No items yet — browse the shop above and hit <strong>Add to Cart</strong>.</p>
           </div>
           <div class="cart-total-row" id="cart-total-row" style="display:none">
             <span>Estimated Total</span>
@@ -150,23 +150,6 @@
         </div>
         <div class="order-form-wrap reveal reveal-delay-1">
           <form id="order-form" novalidate>
-
-            <!-- Product select -->
-            <div class="field-group">
-              <label for="form-product">Product</label>
-              <select id="form-product" name="product" required>
-                <option value="">— Select a product —</option>
-              </select>
-            </div>
-
-            <!-- Dynamic options injected here -->
-            <div id="form-options"></div>
-
-            <!-- Quantity -->
-            <div class="field-group">
-              <label for="form-qty">Quantity</label>
-              <input type="number" id="form-qty" name="quantity" min="1" value="1" required />
-            </div>
 
             <!-- Customer info -->
             <div class="field-row">
@@ -190,10 +173,7 @@
               <textarea id="form-notes" name="notes" rows="3" placeholder="Any special requirements…"></textarea>
             </div>
 
-            <div class="form-btn-row">
-              <button type="button" class="btn btn-outline" id="form-add-btn">+ Add to Order</button>
-              <button type="submit" class="btn btn-primary" id="form-submit">Send Inquiry</button>
-            </div>
+            <button type="submit" class="btn btn-primary btn-full" id="form-submit">Send Order Request</button>
             <p class="form-note">We typically reply within 1 business day.</p>
             <div class="form-feedback" id="form-feedback" role="alert" aria-live="polite"></div>
           </form>
@@ -270,12 +250,20 @@
           <p class="modal-desc" id="modal-desc"></p>
           <div class="modal-options" id="modal-options"></div>
           <div class="modal-actions">
-            <button class="btn btn-primary" id="modal-order-btn">Inquire / Order</button>
+            <button class="btn btn-primary" id="modal-add-btn">Add to Cart</button>
+            <button class="btn btn-outline" id="modal-checkout-btn">Checkout →</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Floating cart badge — appears once an item is added -->
+  <button class="cart-fab" id="cart-fab" aria-label="Go to cart" hidden>
+    <span class="cart-fab-icon">🛒</span>
+    <span class="cart-fab-label">View Order</span>
+    <span class="cart-fab-count" id="cart-fab-count">0</span>
+  </button>
 
   <!-- Scripts -->
   <script src="app.js"></script>
