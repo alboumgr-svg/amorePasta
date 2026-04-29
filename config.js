@@ -130,7 +130,7 @@ const CONFIG = {
   products: [
     {
       id: "p1",
-      name: "Penne per Pound",
+      name: "Penne",
       category: "Penne",
       price: 5,
       description: "Our classic Penne",
@@ -139,12 +139,15 @@ const CONFIG = {
       tags: ["bestseller"],
       available: true,
       options: [
-        { label: "Size", choices: ["0.5 lb", "1 lb", "2 lb"] },
+        { label: "Size", choices: ["0.5 lb", "1 lb", "2 lb"],
+          // Maps directly to choices. Adds $0 for 12oz, $4 for 1lb, $18 for 2lb
+          priceModifiers: [5, 8.00, 15.00]
+         },
       ],
     },
     {
       id: "p2",
-      name: "Fusilli per Pound",
+      name: "Fusilli",
       category: "Fusilli",
       price: 5,
       description: "Our classic Fusilli",
@@ -153,12 +156,15 @@ const CONFIG = {
       tags: ["new"],
       available: true,
       options: [
-        { label: "Size", choices: ["0.5 lb", "1 lb", "2 lb"] },
+        { label: "Size", choices: ["0.5 lb", "1 lb", "2 lb"], 
+          // Maps directly to choices. Adds $0 for 12oz, $4 for 1lb, $18 for 2lb
+          priceModifiers: [5, 8.00, 15.00]
+         },
       ],
     },
     {
       id: "p3",
-      name: "Spaghetti per Pound",
+      name: "Spaghetti",
       category: "Spaghetti",
       price: 5,
       description: "Our classic Spaghetti",
@@ -167,7 +173,10 @@ const CONFIG = {
       tags: ["classic"],
       available: true,
       options: [
-        { label: "Size", choices: ["0.5 lb", "1 lb", "2 lb"] },
+        { label: "Size", choices: ["0.5 lb", "1 lb", "2 lb"],
+          // Maps directly to choices. Adds $0 for 12oz, $4 for 1lb, $18 for 2lb
+          priceModifiers: [5, 8.00, 15.00]
+         },
       ],
     },
   ],
@@ -200,24 +209,50 @@ const CONFIG = {
     },
   ],
 
-  /* ── ORDER FORM ──────────────────────────────────────────── */
-  /*
-   *  submitMethod options:
-   *    "mailto"    – opens default mail client (no server needed)
-   *    "formspree" – set formspreeId to your Formspree form ID
-   *    "netlify"   – add data-netlify="true" attribute automatically
-   *    "emailjs"   – set emailjs config block
-   */
+  /* ── EMAIL (EmailJS — free, no backend needed) ───────────
+   *
+   *  SETUP (one-time, ~5 minutes):
+   *  1. Create a free account at https://emailjs.com
+   *  2. Add an Email Service (Gmail, Outlook, etc.) → copy the Service ID
+   *  3. Create TWO email templates (see variables below) → copy each Template ID
+   *  4. Go to Account → Public Key → copy it
+   *  5. Paste all three values below and you're live.
+   *
+   *  FREE TIER: 200 emails/month (each order sends 2 — so ~100 orders/month free)
+   *
+   *  ── TEMPLATE VARIABLES ──────────────────────────────────
+   *  Use these in your EmailJS template editor as {{variable_name}}:
+   *
+   *    {{order_id}}        — unique order number e.g. #M3F2A1-XZ9K
+   *    {{order_date}}      — e.g. June 12, 2025 at 3:42 PM
+   *    {{customer_name}}   — customer's full name
+   *    {{customer_email}}  — customer's email address
+   *    {{customer_phone}}  — customer's phone (or "Not provided")
+   *    {{cart_summary}}    — full itemised order, one line per item
+   *    {{order_total}}     — formatted total e.g. $23.00
+   *    {{business_name}}   — pulled from business.name above
+   *    {{business_email}}  — pulled from business.email above
+   *    {{business_phone}}  — pulled from business.phone above
+   *    {{notes}}           — customer's special requests
+   *
+   *  ── TEMPLATE 1: orderTemplateId (goes TO YOU) ───────────
+   *  Subject:  New Order {{order_id}} — {{business_name}}
+   *  To email: your business email (set in EmailJS template settings)
+   *  Body: use all variables above to build your invoice layout
+   *
+   *  ── TEMPLATE 2: confirmTemplateId (goes TO CUSTOMER) ────
+   *  Subject:  Your order is confirmed! {{order_id}}
+   *  To email: {{customer_email}}  ← set this in EmailJS template settings
+   *  Body: thank them, show {{cart_summary}}, {{order_total}}, {{order_id}}
+   *  Leave confirmTemplateId empty ("") to skip customer confirmation emails.
+   * ───────────────────────────────────────────────────────── */
   form: {
-    submitMethod: "mailto",        // ← change this
-    mailtoAddress: "hello@volta.store",
-    formspreeId:   "",             // e.g. "xrgzqwop"
     emailjs: {
-      serviceId:   "",
-      templateId:  "",
-      publicKey:   "",
+      publicKey:         "hneHyaX4JKNG9Ikdu",   // Account → Public Key
+      serviceId:         "service_t6j82jr",   // Email Services → Service ID
+      orderTemplateId:   "template_esqstrf",   // Template that sends TO YOU (the business)
+      confirmTemplateId: "template_gm0dix6",   // Template that sends TO THE CUSTOMER (leave "" to skip)
     },
-    netlify: false,
   },
 
 };

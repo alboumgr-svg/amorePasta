@@ -192,11 +192,16 @@ const CONFIG = {
   ],
 
   form: {
-    submitMethod:  "mailto",
+    submitMethod:  "formspree",
     mailtoAddress: "studio@noir.co",
     formspreeId:   "",
-    emailjs:       { serviceId: "", templateId: "", publicKey: "" },
-    netlify:       false,
+    emailjs: {
+      enabled:    false,
+      serviceId:  "",
+      templateId: "",
+      publicKey:  "",
+    },
+    netlify: false,
   },
 
 };

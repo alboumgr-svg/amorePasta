@@ -258,6 +258,38 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════
+       ORDER SUCCESS OVERLAY
+       Shown by showOrderSuccess() in app.js after Formspree confirms.
+       ═══════════════════════════════════════════════════════ -->
+  <div id="order-success" class="success-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="success-title">
+    <div class="success-card">
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <h2 id="success-title">Order Received!</h2>
+      <p class="success-subtitle">Thank you — we'll be in touch soon.</p>
+
+      <div class="success-order-meta">
+        <span class="success-label">Order ID</span>
+        <span class="success-value" id="success-order-num"></span>
+      </div>
+      <div class="success-order-meta">
+        <span class="success-label">Confirmation sent to</span>
+        <span class="success-value" id="success-email-val"></span>
+      </div>
+
+      <div class="success-divider"></div>
+
+      <!-- Itemised order summary built by JS -->
+      <div class="success-summary" id="success-summary"></div>
+
+      <div class="success-divider"></div>
+
+      <p class="success-note">We typically confirm within 1 business day. Check your spam folder if you don't hear from us.</p>
+
+      <button class="btn btn-primary btn-full" id="success-close-btn">Done</button>
+    </div>
+  </div>
+
   <!-- Floating cart badge — appears once an item is added -->
   <button class="cart-fab" id="cart-fab" aria-label="Go to cart" hidden>
     <span class="cart-fab-icon">🛒</span>
