@@ -651,31 +651,33 @@
       return;
     }
 
-    const data          = new FormData(form);
-    const orderId       = generateOrderId();
-    const orderDate     = new Date().toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" });
-    const customerName  = data.get("name");
-    const customerEmail = data.get("email");
-    const customerPhone = data.get("phone") || "Not provided";
-    const notes         = data.get("notes") || "None";
-    const lines         = cartToLines();
-    const total         = getCartTotal();
+    const data            = new FormData(form);
+    const orderId         = generateOrderId();
+    const orderDate       = new Date().toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" });
+    const customerName    = data.get("name");
+    const customerEmail   = data.get("email");
+    const customerPhone   = data.get("phone") || "Not provided";
+    const customerAddress = data.get("address") || "Not provided";
+    const notes           = data.get("notes") || "None";
+    const lines           = cartToLines();
+    const total           = getCartTotal();
 
     /*
      * Shared template variables — available in BOTH EmailJS templates.
      * In your EmailJS template editor, reference these as {{variable_name}}.
      *
-     *   {{order_id}}        — e.g. #M3F2A1-XZ9K
-     *   {{order_date}}      — e.g. June 12, 2025 at 3:42 PM
-     *   {{customer_name}}   — customer's full name
-     *   {{customer_email}}  — customer's email address
-     *   {{customer_phone}}  — customer's phone (or "Not provided")
-     *   {{cart_summary}}    — line-by-line itemised order
-     *   {{order_total}}     — formatted total e.g. $23.00
-     *   {{business_name}}   — from config.js → business.name
-     *   {{business_email}}  — from config.js → business.email
-     *   {{business_phone}}  — from config.js → business.phone
-     *   {{notes}}           — customer's special requests
+     *   {{order_id}}         — e.g. #M3F2A1-XZ9K
+     *   {{order_date}}       — e.g. June 12, 2025 at 3:42 PM
+     *   {{customer_name}}    — customer's full name
+     *   {{customer_email}}   — customer's email address
+     *   {{customer_phone}}   — customer's phone (or "Not provided")
+     *   {{customer_address}} — customers address
+     *   {{cart_summary}}     — line-by-line itemised order
+     *   {{order_total}}      — formatted total e.g. $23.00
+     *   {{business_name}}    — from config.js → business.name
+     *   {{business_email}}   — from config.js → business.email
+     *   {{business_phone}}   — from config.js → business.phone
+     *   {{notes}}            — customer's special requests
      */
     const templateVars = {
       order_id:       orderId,
@@ -683,6 +685,7 @@
       customer_name:  customerName,
       customer_email: customerEmail,
       customer_phone: customerPhone,
+      customer_address: customerAddress,
       cart_summary:   lines.join("\n"),
       order_total:    fmt(total),
       business_name:  C.business.name,
