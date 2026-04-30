@@ -325,15 +325,58 @@
   function buildFeatured() {
     const grid = $("#featured-grid");
     if (!grid) return;
-    (C.featured || [])
-      .map(id => C.products.find(p => p.id === id))
-      .filter(Boolean)
-      .forEach((p, i) => {
-        const card = createCard(p);
-        card.classList.add("reveal");
-        card.style.transitionDelay = `${i * 0.1}s`;
-        grid.appendChild(card);
-      });
+
+    grid.innerHTML = "";
+
+    const items = C.featured || [];
+
+    if (!items.length) {
+      grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;opacity:0.7;">No current updates.</p>`;
+      return;
+    }
+
+    items.forEach((item, i) => {
+      const card = el("div", "product-card reveal");
+      card.style.transitionDelay = `${i * 0.1}s`;
+
+      const inner = el("div", "card-info");
+
+      const title = el("p", "card-name", item.title || "");
+      const body  = el("p", "card-category", item.body || "");
+
+      card.style.cursor = "default"
+
+      // Fix typography for body text
+      body.style.textTransform = "none";     // kill uppercase
+      body.style.fontFamily = "var(--font-body)";
+      body.style.fontSize = "1rem";       // slightly more readable
+      body.style.lineHeight = "1.3";
+      body.style.letterSpacing = "normal";
+      body.style.opacity = "0.9";
+      
+      // Override typography for featured titles
+      title.style.fontFamily = "var(--font-display)";
+      title.style.fontWeight = "700";
+      title.style.fontSize = "1.3rem";   // bump it up from 1rem
+      title.style.lineHeight = "1.3";
+      title.style.letterSpacing = "0.02em"; // optional: cleaner display look
+
+      inner.appendChild(title);
+      inner.appendChild(body);
+
+      if (item.mapEmbedUrl) {
+        const iframe = document.createElement("iframe");
+        iframe.src = item.mapEmbedUrl;
+        iframe.style.width = "100%";
+        iframe.style.height = "200px";
+        iframe.style.border = "0";
+        iframe.loading = "lazy";
+        inner.appendChild(iframe);
+      }
+
+      card.appendChild(inner);
+      grid.appendChild(card);
+    });
   }
 
   /* ── 6. PRODUCT GRID + FILTER ─────────────────────────── */

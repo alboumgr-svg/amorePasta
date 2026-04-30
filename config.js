@@ -78,7 +78,7 @@ const CONFIG = {
   sections: {
     hero:         true,
     about:        true,
-    featured:     false,
+    featured:     true,
     products:     true,
     testimonials: true,
     contact:      true,
@@ -181,8 +181,55 @@ const CONFIG = {
     },
   ],
 
-  /* ── FEATURED (ids from products above) ─────────────────── */
-  featured: ["p1", "p3", "p4", "p8"],
+  /* ── FEATURED ─────────────────── */
+  featured: [
+    {
+      title: "Now Selling at Norz Farms!",
+      body: `
+        You can find us at Norz Hill Farm & Market — stop by to pick up fresh pasta in person.<br><br>
+        <button
+          style="cursor:pointer;"
+          onclick="
+            const btn = this;
+            navigator.clipboard.writeText('120 S Branch Rd, Hillsborough Township, NJ 08844')
+              .then(() => {
+                const original = btn.innerText;
+                btn.innerText = 'Copied!';
+                btn.disabled = true;
+                setTimeout(() => {
+                  btn.innerText = original;
+                  btn.disabled = false;
+                }, 1500);
+              })
+              .catch(() => {
+                btn.innerText = 'Failed';
+              });
+          "
+        >
+          Copy Address
+        </button>
+        <br>
+        <span id="norz-address">120 S Branch Rd, Hillsborough Township, NJ 08844</span>
+        <br><br>
+        <a href="https://maps.google.com/?q=120 S Branch Rd, Hillsborough Township, NJ 08844" target="_blank" rel="noopener">
+          Open in Google Maps →
+        </a>
+      `,
+      mapEmbedUrl: "https://maps.google.com/maps?q=Norz%20Hill%20Farm%20Market%20New%20Jersey&output=embed"
+    },
+    {
+      title: "Based in Somerville, NJ",
+      body: "We are proudly based in Somerville, New Jersey, crafting fresh pasta in small batches for our local community."
+    },
+    {
+      title: "Handmade Weekly",
+      body: "All pasta is made fresh weekly with simple, high-quality ingredients. Availability may vary based on batch production."
+    },
+    {
+      title: "Order for Pickup or Delivery",
+      body: "We offer local delivery and pickup options. Submit an order request and we’ll coordinate directly with you."
+    }
+  ],
 
   /* ── TESTIMONIALS ────────────────────────────────────────── */
   testimonials: [
