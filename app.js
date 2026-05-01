@@ -340,7 +340,7 @@
       card.style.transitionDelay = `${i * 0.1}s`;
 
       const inner = el("div", "card-info");
-
+      const date = el("p", "card-name", item.date || "");
       const title = el("p", "card-name", item.title || "");
       const body  = el("p", "card-category", item.body || "");
 
@@ -348,8 +348,8 @@
 
       // Fix typography for body text
       body.style.textTransform = "none";     // kill uppercase
-      body.style.fontFamily = "var(--font-body)";
-      body.style.fontSize = "1rem";       // slightly more readable
+      body.style.fontFamily = "var(--font-display)";
+      body.style.fontSize = "1.2rem";       // slightly more readable
       body.style.lineHeight = "1.3";
       body.style.letterSpacing = "normal";
       body.style.opacity = "0.9";
@@ -357,10 +357,19 @@
       // Override typography for featured titles
       title.style.fontFamily = "var(--font-display)";
       title.style.fontWeight = "700";
-      title.style.fontSize = "1.3rem";   // bump it up from 1rem
+      title.style.fontSize = "1.5rem";   // bump it up from 1rem
       title.style.lineHeight = "1.3";
       title.style.letterSpacing = "0.02em"; // optional: cleaner display look
 
+      // Fix typography for body text
+      date.style.textTransform = "none";     // kill uppercase
+      date.style.fontFamily = "var(--font-display)";
+      date.style.fontSize = "1rem";       // slightly more readable
+      date.style.lineHeight = "1.3";
+      date.style.letterSpacing = "normal";
+      date.style.opacity = "0.9";
+
+      inner.appendChild(date);
       inner.appendChild(title);
       inner.appendChild(body);
 

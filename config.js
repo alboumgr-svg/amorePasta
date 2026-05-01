@@ -184,6 +184,7 @@ const CONFIG = {
   /* ── FEATURED ─────────────────── */
   featured: [
     {
+      date: "May 1st, 2026",
       title: "Now Selling at Norz Farms!",
       body: `
         You can find us at Norz Hill Farm & Market — stop by to pick up fresh pasta in person.<br><br>
@@ -218,15 +219,13 @@ const CONFIG = {
       mapEmbedUrl: "https://maps.google.com/maps?q=Norz%20Hill%20Farm%20Market%20New%20Jersey&output=embed"
     },
     {
-      title: "Based in Somerville, NJ",
-      body: "We are proudly based in Somerville, New Jersey, crafting fresh pasta in small batches for our local community."
+      date: "May 1st, 2026",
+      title: "New Website Just Launched!",
+      body: "If you're here, you already know! We are excited to present this new website as a means to show off our amazing pasta and get your orders to your doorstep!"
     },
     {
-      title: "Handmade Weekly",
-      body: "All pasta is made fresh weekly with simple, high-quality ingredients. Availability may vary based on batch production."
-    },
-    {
-      title: "Order for Pickup or Delivery",
+      date: "May 1st, 2026",
+      title: "Now Offering Pickup or Delivery",
       body: "We offer local delivery and pickup options. Submit an order request and we’ll coordinate directly with you."
     }
   ],
