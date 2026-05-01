@@ -352,7 +352,6 @@
       body.style.fontSize = "1.2rem";       // slightly more readable
       body.style.lineHeight = "1.3";
       body.style.letterSpacing = "normal";
-      body.style.opacity = "0.9";
       
       // Override typography for featured titles
       title.style.fontFamily = "var(--font-display)";
