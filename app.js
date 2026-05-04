@@ -325,64 +325,44 @@
   function buildFeatured() {
     const grid = $("#featured-grid");
     if (!grid) return;
-
     grid.innerHTML = "";
 
     const items = C.featured || [];
-
     if (!items.length) {
-      grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;opacity:0.7;">No current updates.</p>`;
+      const empty = el("p", "news-empty", "No current updates.");
+      grid.appendChild(empty);
       return;
     }
 
     items.forEach((item, i) => {
-      const card = el("div", "product-card reveal");
+      const card = el("article", "news-card reveal");
       card.style.transitionDelay = `${i * 0.1}s`;
 
-      const inner = el("div", "card-info");
-      const date = el("p", "card-name", item.date || "");
-      const title = el("p", "card-name", item.title || "");
-      const body  = el("p", "card-category", item.body || "");
-
-      card.style.cursor = "default"
-
-      // Fix typography for body text
-      body.style.textTransform = "none";     // kill uppercase
-      body.style.fontFamily = "var(--font-display)";
-      body.style.fontSize = "1.2rem";       // slightly more readable
-      body.style.lineHeight = "1.3";
-      body.style.letterSpacing = "normal";
-      
-      // Override typography for featured titles
-      title.style.fontFamily = "var(--font-display)";
-      title.style.fontWeight = "700";
-      title.style.fontSize = "1.5rem";   // bump it up from 1rem
-      title.style.lineHeight = "1.3";
-      title.style.letterSpacing = "0.02em"; // optional: cleaner display look
-
-      // Fix typography for body text
-      date.style.textTransform = "none";     // kill uppercase
-      date.style.fontFamily = "var(--font-display)";
-      date.style.fontSize = "1rem";       // slightly more readable
-      date.style.lineHeight = "1.3";
-      date.style.letterSpacing = "normal";
-      date.style.opacity = "0.9";
-
-      inner.appendChild(date);
-      inner.appendChild(title);
-      inner.appendChild(body);
-
-      if (item.mapEmbedUrl) {
-        const iframe = document.createElement("iframe");
-        iframe.src = item.mapEmbedUrl;
-        iframe.style.width = "100%";
-        iframe.style.height = "200px";
-        iframe.style.border = "0";
-        iframe.loading = "lazy";
-        inner.appendChild(iframe);
+      if (item.date) {
+        card.appendChild(el("time", "news-date", item.date));
       }
 
-      card.appendChild(inner);
+      if (item.title) {
+        card.appendChild(el("h3", "news-title", item.title));
+      }
+
+      if (item.body) {
+        const body = el("div", "news-body");
+        body.innerHTML = item.body;
+        card.appendChild(body);
+      }
+
+      if (item.mapEmbedUrl) {
+        const mapWrap = el("div", "news-map");
+        const iframe = document.createElement("iframe");
+        iframe.src = item.mapEmbedUrl;
+        iframe.loading = "lazy";
+        iframe.setAttribute("allowfullscreen", "");
+        iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
+        mapWrap.appendChild(iframe);
+        card.appendChild(mapWrap);
+      }
+
       grid.appendChild(card);
     });
   }
